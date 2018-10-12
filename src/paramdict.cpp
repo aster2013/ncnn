@@ -172,7 +172,13 @@ int ParamDict::load_param(FILE* fp)
     return 0;
 }
 
+#ifdef _MSC_VER
+static int _b;
+static int _n;
+#define mem_sscanf(ptr, format, ...)  (_b=0, _n = sscanf(ptr, format "%n", __VA_ARGS__, &_b), ptr+=_b, _b>0?_n:0) 
+#else
 #define mem_sscanf(ptr, format, ...)  ({int _b=0; int _n = sscanf(ptr, format "%n", __VA_ARGS__, &_b); ptr+=_b;_b>0?_n:0;}) 
+#endif
 
 int ParamDict::load_param_mem(const char*& mem){
     clear();
